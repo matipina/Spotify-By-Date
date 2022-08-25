@@ -6,6 +6,7 @@ SPOTIFY_CREATE_PLAYLIST_URL = f'https://api.spotify.com/v1/users/{USER_ID}/playl
 SPOTIFY_GET_ALBUMS_URL = f'https://api.spotify.com/v1/me/albums'
 ACCESS_TOKEN = \
     'BQC8ICC9XqdzqubmhVtgZhKc4EyUCKo8g6NroGqXuhX9seG0fo8rwqlJl_Q3ipSqxS_7Bvv3Ub3QgCF34vP4OTW3rG5H51FfUmREPq0V5jCknmG5wrwCOit9Gid4m3_JFl08RrZpZq9joj-cgMEhvtO9nuslvEcHKRktHtqqpUpX4krlQtJ1LwW--nBp5w'
+    
 def create_playlist(name, public=False):
     response = requests.post(
         SPOTIFY_CREATE_PLAYLIST_URL,
