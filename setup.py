@@ -13,11 +13,11 @@ requires = [
 ]
 
 setup(
-    name='SpotifyToYoutubeMP3',
+    name='SpotifByDate',
     version='1.0',
-    description='An application that gets your Spotify songs and downloads the YoutubeMP3 version',
-    author='Jason Goodison',
-    author_email='jasongoodisondevelopment@gmail.com',
+    description='An application that gets your liked songs and albums released on a specific date',
+    author='Matías Piña',
+    author_email='mlpina@uc.cl',
     keywords='web flask',
     packages=find_packages(),
     include_package_data=True,
