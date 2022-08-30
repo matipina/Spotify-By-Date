@@ -1,5 +1,5 @@
 from lib2to3.pgen2 import token
-from flask import Flask, request, url_for, session, redirect
+from flask import Flask, request, url_for, session, redirect, render_template
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from secret_key import create_key, client_id, client_secret
@@ -12,6 +12,8 @@ app = Flask(__name__)
 app.secret_key = create_key()
 app.config['SESSION_COOKIE_NAME'] = 'SpotiCookie'
 TOKEN_INFO = 'token_info'
+year = '2015'
+
 
 def create_spotify_oauth():
     return SpotifyOAuth(
@@ -34,7 +36,7 @@ def get_token():
         token_info = spotify_oauth.refresh_access_token(token_info['refresh_token'])
     return token_info 
 
-
+# Routes
 @app.route('/')
 def login():
     spotify_oauth = create_spotify_oauth()
@@ -54,7 +56,7 @@ def authorize():
 
 
 @app.route('/getTracks')
-def getTracks():
+def get_tracks():
     try:
         token_info = get_token()
     except:
@@ -67,7 +69,7 @@ def getTracks():
 
 
 @app.route('/getAlbums')
-def getAlbums():
+def get_albums():
     try:
         token_info = get_token()
     except:
@@ -77,9 +79,19 @@ def getAlbums():
     sp = spotipy.Spotify(auth=token_info['access_token'])
     print(f'sp: {sp}')
     albums = get_saved_albums(sp=sp)
-    results = display_results(albums)
+
+    if year:
+        filtered_albums = [item for item in albums if item['album']['release_date'][:4] == year]
+        results = display_results(filtered_albums)
+ 
+    else:
+        results = display_results(albums)
 
     return results
+
+@app.route('/pickDate')
+def pick_date():
+    return render_template('post.html')
 
 
 

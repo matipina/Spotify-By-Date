@@ -4,3 +4,8 @@ SpotifByDate.egg-info
 .cache
 
 secret_key.py
+server/secret_key.py
+server/.cache
+server/__pycache__
+
+client

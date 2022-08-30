@@ -21,7 +21,7 @@ def display_results(albums):
     print(f'Got {len(albums)} albums')    
 
     i = 0
-    results = []
+    results = ''
     for item in albums:
         i += 1
         album = item['album']
@@ -30,6 +30,5 @@ def display_results(albums):
         artists = album['artists']
         artists_names = [a['name'] for a in artists]
         release_date = album['release_date']
-        print(f'[{i}] {name} - {artists_names[0]} ({release_date})')
-        results.append(f'[{i}] {name} - {artists_names[0]} ({release_date})')
+        results += (f'[{i}] {name} - {artists_names[0]} ({release_date})\n')
     return results
