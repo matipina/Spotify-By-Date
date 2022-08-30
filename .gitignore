@@ -1,5 +1,6 @@
 build
 dist
 SpotifByDate.egg-info
+.cache
 
 secret_key.py

@@ -1,14 +1,38 @@
+from lib2to3.pgen2 import token
 from flask import Flask, request, url_for, session, redirect
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from secret_key import create_key, client_id, client_secret
-import os
+import time
+from functions import get_saved_albums, display_results
 
 app = Flask(__name__)
 
 
 app.secret_key = create_key()
 app.config['SESSION_COOKIE_NAME'] = 'SpotiCookie'
+TOKEN_INFO = 'token_info'
+
+def create_spotify_oauth():
+    return SpotifyOAuth(
+        client_id=client_id,
+        client_secret=client_secret,
+        redirect_uri=url_for('authorize', _external=True),
+        scope='user-library-read'
+    )
+
+def get_token():
+    token_info = session.get(TOKEN_INFO, None)
+    if not token_info:
+        raise "exception"
+
+    now = int(time.time())
+
+    is_expired = token_info['expires_at'] - now < 60
+    if is_expired:
+        spotify_oauth = create_spotify_oauth()
+        token_info = spotify_oauth.refresh_access_token(token_info['refresh_token'])
+    return token_info 
 
 
 @app.route('/')
@@ -20,26 +44,43 @@ def login():
 
 @app.route('/authorize')
 def authorize():
-    return 'Authorized!'
+    spotify_oauth = create_spotify_oauth()
+    session.clear()
+    code = request.args.get('code')
+    token_info = spotify_oauth.get_access_token(code)
+    session[TOKEN_INFO] = token_info
+
+    return redirect(url_for('getTracks', _external=True),)
 
 
 @app.route('/getTracks')
 def getTracks():
-    return 'Some songs'
+    try:
+        token_info = get_token()
+    except:
+        print('user not logged in')
+        return redirect(url_for('login', _external=False))
+
+    sp = spotipy.Spotify(auth=token_info['access_token'])
+    print(f'sp: {sp}')
+    return sp.current_user_saved_tracks()['items']
 
 
 @app.route('/getAlbums')
 def getAlbums():
-    return 'Some cool albums'
+    try:
+        token_info = get_token()
+    except:
+        print('user not logged in')
+        redirect(url_for('login', _external=False))
 
+    sp = spotipy.Spotify(auth=token_info['access_token'])
+    print(f'sp: {sp}')
+    albums = get_saved_albums(sp=sp)
+    results = display_results(albums)
 
-def create_spotify_oauth():
-    return SpotifyOAuth(
-        client_id=client_id,
-        client_secret=client_secret,
-        redirect_uri=url_for('authorize', _external=True),
-        scope='user-library-read'
-    )
+    return results
+
 
 
 if __name__ == '__main__':
