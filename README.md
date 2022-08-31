@@ -5,5 +5,7 @@ app will help you filter your Spotify music by release date.
 
 To dos:
 
-* Albums returned should be in order
-* Automate auth process
+* Create frontend
+  * Add form to choose year
+  * Allow to switch from albums to songs
+  * Order albums by release date and by plays

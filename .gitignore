@@ -1,11 +1,33 @@
-build
-dist
-SpotifByDate.egg-info
-.cache
-
 secret_key.py
 server/secret_key.py
 server/.cache
 server/__pycache__
 
 client
+.cache
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# C extensions
+*.so
+
+# Distribution / packaging
+bin/
+build/
+develop-eggs/
+dist/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
