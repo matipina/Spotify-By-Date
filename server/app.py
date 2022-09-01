@@ -1,10 +1,10 @@
-from lib2to3.pgen2 import token
-from flask import Flask, request, url_for, session, redirect, render_template
+import time
 import spotipy
+from flask import Flask, request, url_for, session, redirect, render_template
 from spotipy.oauth2 import SpotifyOAuth
 from secret_key import create_key, client_id, client_secret
-import time
 from functions import get_saved_albums, display_results
+from front import DateForm
 
 app = Flask(__name__)
 
@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.secret_key = create_key()
 app.config['SESSION_COOKIE_NAME'] = 'SpotiCookie'
 TOKEN_INFO = 'token_info'
-year = '2015'
+year = '2011'
 
 
 def create_spotify_oauth():
@@ -52,10 +52,22 @@ def authorize():
     token_info = spotify_oauth.get_access_token(code)
     session[TOKEN_INFO] = token_info
 
-    return redirect(url_for('getTracks', _external=True),)
+    return redirect(url_for('home', _external=True))
 
 
-@app.route('/getTracks')
+@app.route('/home/')
+def home():
+    return render_template('index.html')    
+    #return redirect(url_for('get_tracks', _external=True),)
+
+
+@app.route('/pickDate/')
+def pick_date():
+    form = DateForm()
+    return render_template('post.html', form=form)
+
+
+@app.route('/getTracks/')
 def get_tracks():
     try:
         token_info = get_token()
@@ -68,7 +80,7 @@ def get_tracks():
     return sp.current_user_saved_tracks()['items']
 
 
-@app.route('/getAlbums')
+@app.route('/getAlbums/')
 def get_albums():
     try:
         token_info = get_token()
@@ -88,11 +100,6 @@ def get_albums():
         results = display_results(albums)
 
     return results
-
-@app.route('/pickDate')
-def pick_date():
-    return render_template('post.html')
-
 
 
 if __name__ == '__main__':
