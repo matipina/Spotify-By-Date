@@ -67,6 +67,27 @@ def pick_date():
     return render_template('post.html', form=form)
 
 
+@app.route('/getAlbums/')
+def get_albums():
+    try:
+        token_info = get_token()
+    except:
+        print('user not logged in')
+        redirect(url_for('login', _external=False))
+
+    sp = spotipy.Spotify(auth=token_info['access_token'])
+    albums = get_saved_albums(sp=sp)
+
+    if year:
+        filtered_albums = [item for item in albums if item['album']['release_date'][:4] == year]
+        results = display_results(filtered_albums)
+ 
+    else:
+        results = display_results(albums)
+
+    return results
+
+
 @app.route('/getTracks/')
 def get_tracks():
     try:
@@ -79,27 +100,6 @@ def get_tracks():
     print(f'sp: {sp}')
     return sp.current_user_saved_tracks()['items']
 
-
-@app.route('/getAlbums/')
-def get_albums():
-    try:
-        token_info = get_token()
-    except:
-        print('user not logged in')
-        redirect(url_for('login', _external=False))
-
-    sp = spotipy.Spotify(auth=token_info['access_token'])
-    print(f'sp: {sp}')
-    albums = get_saved_albums(sp=sp)
-
-    if year:
-        filtered_albums = [item for item in albums if item['album']['release_date'][:4] == year]
-        results = display_results(filtered_albums)
- 
-    else:
-        results = display_results(albums)
-
-    return results
 
 
 if __name__ == '__main__':

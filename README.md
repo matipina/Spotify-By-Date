@@ -9,3 +9,6 @@ To dos:
   * Add form to choose year
   * Allow to switch from albums to songs
   * Order albums by release date and by plays
+
+* Use cache to store data and stop sending request on each update
+* Change url after authorization is complete
